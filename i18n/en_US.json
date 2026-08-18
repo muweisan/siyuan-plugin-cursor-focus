@@ -1,0 +1,6 @@
+{
+  "loaded": "Cursor Focus plugin loaded",
+  "unloaded": "Cursor Focus plugin unloaded",
+  "focusToCursor": "Focus on the cursor block",
+  "noCursor": "No cursor position in the current document"
+}

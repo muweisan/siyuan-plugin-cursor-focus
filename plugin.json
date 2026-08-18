@@ -1,0 +1,75 @@
+{
+  "name": "siyuan-plugin-cursor-focus",
+  "author": "muweisan",
+  "url": "https://github.com/muweisan/siyuan-plugin-cursor-focus",
+  "version": "1.0.0",
+  "minAppVersion": "2.10.0",
+  "backends": [
+    "windows",
+    "linux",
+    "darwin",
+    "docker",
+    "android",
+    "ios",
+    "harmony"
+  ],
+  "frontends": [
+    "desktop",
+    "browser-desktop",
+    "desktop-window",
+    "mobile",
+    "browser-mobile"
+  ],
+  "displayName": {
+    "zh_CN": "光标定位",
+    "en_US": "Cursor Focus"
+  },
+  "description": {
+    "zh_CN": "切换文档时自动跳转到光标所在块，并高亮显示",
+    "en_US": "Auto-scroll to cursor block when switching documents"
+  },
+  "readme": {
+    "zh_CN": "README.md",
+    "en_US": "README_en_US.md"
+  },
+  "funding": {
+    "openCollective": "",
+    "patreon": "",
+    "github": "",
+    "custom": []
+  },
+  "keywords": [
+    "siyuan",
+    "plugin",
+    "cursor",
+    "focus"
+  ],
+  "frontmatter": [
+    [
+      "custom",
+      "autoFocus",
+      {
+        "type": "checkbox",
+        "label": {
+          "zh_CN": "切换文档时自动聚焦",
+          "en_US": "Auto focus when switching documents"
+        },
+        "default": true
+      }
+    ],
+    [
+      "custom",
+      "highlightDuration",
+      {
+        "type": "number",
+        "label": {
+          "zh_CN": "高亮时长（毫秒）",
+          "en_US": "Highlight duration (ms)"
+        },
+        "default": 2000,
+        "min": 500,
+        "max": 5000
+      }
+    ]
+  ]
+}

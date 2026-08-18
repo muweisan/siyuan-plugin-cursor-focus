@@ -1,0 +1,28 @@
+{
+  "name": "siyuan-plugin-cursor-focus",
+  "version": "1.0.0",
+  "description": "SiYuan Note 插件：切换文档时自动跳转到光标所在块，并高亮显示",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "keywords": [
+    "siyuan",
+    "plugin",
+    "cursor",
+    "focus"
+  ],
+  "author": "muweisan",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.8",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^20.11.30",
+    "rollup": "^4.13.0",
+    "siyuan": "^1.2.4",
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.3"
+  }
+}
