@@ -37,7 +37,7 @@
 
 ### 实现说明
 
-1. 优先使用思源官方 `switch-protyle` 事件监听文档切换，MutationObserver 监听布局激活状态作为兜底方案（带 500 毫秒防抖）
+1. 仅监听思源官方 `switch-protyle` 事件（切换页签和打开新文档都会触发）。刻意不使用 MutationObserver 兜底：它会对布局中任何 class 变化做出反应——包括插件自身的高亮 class——导致视图被反复拉回光标块
 2. 思源切换文档后原编辑器的选区会丢失，插件会持续记录每个文档最近的光标位置，切换回来时据此定位
 3. 设置项通过官方 `Setting` 类暴露，使用 `loadData`/`saveData` 持久化
 4. 构建工具链与官方 plugin-sample 一致：webpack + esbuild-loader + sass + mini-css-extract-plugin

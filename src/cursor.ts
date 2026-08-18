@@ -17,19 +17,19 @@ const DEFAULT_SETTINGS: CursorFocusSettings = {
  *
  * 1. 监听思源官方 "switch-protyle" 事件，切换文档时自动滚动到光标所在块并高亮；
  * 2. 持续记录每个编辑器内最近的光标位置（切换文档后原选区会丢失，因此需要记录）；
- * 3. 提供手动定位（顶栏按钮），定位并高亮当前光标块；
- * 4. MutationObserver 监听布局激活状态作为兜底方案。
+ * 3. 提供手动定位（顶栏按钮），定位并高亮当前光标块。
+ *
+ * 注意：不再使用 MutationObserver 兜底监听布局。它观察整个布局子树的 class 变化，
+ * 会被插件自身的高亮 class 改动触发，导致每 500ms 被反复拉回光标块（无法滚动）。
+ * 官方 "switch-protyle" 事件已覆盖切换页签与打开文档两种场景。
  */
 export class CursorFocus {
     private plugin: Plugin;
-    private switchObserver?: MutationObserver;
     private highlightClass = "cursor-focus-highlight";
     private highlightTimer: number | undefined;
 
     /** protyle 根元素 -> 最近一次光标所在块 ID */
     private lastCursorBlock = new WeakMap<HTMLElement, string>();
-    /** protyle 根元素 -> 最近一次自动聚焦时间戳（防抖，避免事件与兜底监听重复触发） */
-    private lastAutoFocusAt = new WeakMap<HTMLElement, number>();
 
     constructor(plugin: Plugin) {
         this.plugin = plugin;
@@ -77,16 +77,13 @@ export class CursorFocus {
     );
 
     init() {
-        // 1. 官方事件：切换文档时自动聚焦
+        // 1. 官方事件：切换文档时自动聚焦（覆盖切换页签与打开新文档）
         this.plugin.eventBus.on("switch-protyle", this.onSwitchProtyle);
 
         // 2. 持续记录光标位置
         document.addEventListener("selectionchange", this.debouncedOnSelectionChange);
         document.addEventListener("keyup", this.debouncedOnSelectionChange);
         document.addEventListener("mouseup", this.debouncedOnSelectionChange);
-
-        // 3. 兜底：监听布局激活状态变化（防止官方事件未触发的场景）
-        this.observeDocumentSwitch();
     }
 
     /** 获取当前激活的编辑器（protyle 根元素） */
@@ -189,36 +186,6 @@ export class CursorFocus {
         }, duration);
     }
 
-    /** 兜底监听文档切换（MutationObserver 方案） */
-    private observeDocumentSwitch() {
-        const observer = new MutationObserver(() => {
-            const editor = this.getActiveEditor();
-            if (!editor || !this.settings.autoFocus) {
-                return;
-            }
-            const now = Date.now();
-            const last = this.lastAutoFocusAt.get(editor) ?? 0;
-            if (now - last < 500) {
-                return;
-            }
-            this.lastAutoFocusAt.set(editor, now);
-            setTimeout(() => this.focusToCursor(editor), 100);
-        });
-
-        // 观察主布局容器
-        const layoutContainer = document.querySelector(".layout");
-        if (layoutContainer) {
-            observer.observe(layoutContainer, {
-                subtree: true,
-                childList: true,
-                attributes: true,
-                attributeFilter: ["class"],
-            });
-        }
-
-        this.switchObserver = observer;
-    }
-
     /** 简单防抖 */
     private debounce(fn: () => void, wait: number): () => void {
         let timer: number | undefined;
@@ -234,9 +201,6 @@ export class CursorFocus {
     }
 
     destroy() {
-        if (this.switchObserver) {
-            this.switchObserver.disconnect();
-        }
         this.plugin.eventBus.off("switch-protyle", this.onSwitchProtyle);
         document.removeEventListener("selectionchange", this.debouncedOnSelectionChange);
         document.removeEventListener("keyup", this.debouncedOnSelectionChange);

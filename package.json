@@ -1,6 +1,6 @@
 {
   "name": "siyuan-plugin-cursor-focus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SiYuan Note plugin: auto-scroll to the cursor block when switching documents",
   "scripts": {
     "dev": "webpack --config webpack.config.js --mode development",

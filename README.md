@@ -37,7 +37,7 @@ After the plugin is enabled, open the plugin's settings page in the Bazaar to co
 
 ### Implementation notes
 
-1. Uses the official SiYuan `switch-protyle` event as the primary switch listener; a MutationObserver on the layout is kept as a fallback (with 500 ms debounce)
+1. Listens to the official SiYuan `switch-protyle` event only (covers both tab switching and opening documents). A MutationObserver fallback is intentionally NOT used: it reacts to every class change in the layout — including the plugin's own highlight class — which caused the view to jump back to the cursor block repeatedly
 2. SiYuan loses the selection when switching away from a document, so the plugin continuously records the last cursor block of each document and restores the position when switching back
 3. Settings are stored with `loadData`/`saveData` and exposed through the official `Setting` class
 4. Built with the same toolchain as the official plugin-sample: webpack + esbuild-loader + sass + mini-css-extract-plugin
