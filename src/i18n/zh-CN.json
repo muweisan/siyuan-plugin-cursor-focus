@@ -1,0 +1,10 @@
+{
+  "focusToCursor": "定位到光标所在块",
+  "noCursor": "当前文档没有光标位置，无法定位",
+  "saved": "设置已保存",
+  "saveFailed": "保存设置失败",
+  "settingAutoFocus": "切换文档时自动聚焦",
+  "settingAutoFocusDesc": "切换文档时自动滚动到光标所在块",
+  "settingHighlightDuration": "高亮时长（毫秒）",
+  "settingHighlightDurationDesc": "定位块高亮动画时长，范围 500 - 5000 毫秒"
+}

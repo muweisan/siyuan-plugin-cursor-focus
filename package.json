@@ -1,11 +1,10 @@
 {
   "name": "siyuan-plugin-cursor-focus",
   "version": "1.0.0",
-  "description": "SiYuan Note 插件：切换文档时自动跳转到光标所在块，并高亮显示",
-  "main": "dist/index.js",
+  "description": "SiYuan Note plugin: auto-scroll to the cursor block when switching documents",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "dev": "webpack --config webpack.config.js --mode development",
+    "build": "webpack --config webpack.config.js --mode production"
   },
   "keywords": [
     "siyuan",
@@ -15,14 +14,21 @@
   ],
   "author": "muweisan",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.8",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.11.30",
-    "rollup": "^4.13.0",
-    "siyuan": "^1.2.4",
-    "tslib": "^2.6.2",
-    "typescript": "^5.4.3"
+    "copy-webpack-plugin": "^14.0.0",
+    "css-loader": "^7.1.4",
+    "esbuild-loader": "^4.4.3",
+    "mini-css-extract-plugin": "^2.10.2",
+    "sass": "^1.100.0",
+    "sass-loader": "^17.0.0",
+    "siyuan": "1.2.4",
+    "tslib": "^2.8.1",
+    "typescript": "^6.0.3",
+    "webpack": "^5.107.2",
+    "webpack-cli": "^7.0.3",
+    "zip-webpack-plugin": "^4.0.3"
   }
 }

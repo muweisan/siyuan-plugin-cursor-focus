@@ -1,17 +1,11 @@
-# 依赖
-node_modules/
-
-# 构建产物
-dist/
-
-# 日志
-*.log
-npm-debug.log*
-
-# 系统文件
+node_modules
+dist
+package.zip
+index.js
+index.css
+/i18n
+.idea
+.vscode
 .DS_Store
 Thumbs.db
-
-# IDE
-.idea/
-.vscode/
+*.log

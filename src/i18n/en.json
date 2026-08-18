@@ -1,0 +1,10 @@
+{
+  "focusToCursor": "Focus on the cursor block",
+  "noCursor": "No cursor position in the current document",
+  "saved": "settings saved",
+  "saveFailed": "save settings failed",
+  "settingAutoFocus": "Auto focus when switching documents",
+  "settingAutoFocusDesc": "Scroll to the cursor block automatically when switching documents",
+  "settingHighlightDuration": "Highlight duration (ms)",
+  "settingHighlightDurationDesc": "Duration of the highlight animation, 500 - 5000 ms"
+}

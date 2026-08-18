@@ -1,103 +1,82 @@
-# 光标定位（Cursor Focus）
+[中文](https://github.com/muweisan/siyuan-plugin-cursor-focus/blob/main/README.zh-CN.md)
 
-基于《思源插件开发指南：光标定位》实现的思源笔记（SiYuan Note）插件：**切换文档时自动跳转到光标所在块，并高亮显示**。
+# Cursor Focus
 
-## 功能特性
+A SiYuan Note plugin: **auto-scroll to the cursor block and highlight it when switching documents**, based on the official [plugin-sample](https://github.com/siyuan-note/plugin-sample) project structure.
 
-- **切换文档自动定位**：切换文档标签时，自动滚动到该文档中上次光标所在的块
-- **高亮提示**：被定位的块短暂高亮闪烁，时长可在设置中调整（500–5000ms，默认 2000ms）
-- **手动定位**：顶栏按钮可随时手动定位到当前光标块
-- **中 / 英文界面**：界面文案随思源语言设置自动切换
+## Features
 
-## 安装
+* **Auto focus on document switch**: scrolls to the block where the cursor was last placed in that document
+* **Highlight**: the located block flashes briefly; duration configurable (500–5000 ms, default 2000 ms)
+* **Manual focus**: a top-bar button to locate the current cursor block at any time
+* **i18n**: UI texts switch between Chinese and English automatically
 
-### 本地安装
+## Getting started
 
-1. 构建插件：`npm run build`（或 `pnpm run build`）
-2. 在思源中打开「设置」→「集市」→「第三方」
-3. 点击「安装本地插件」，选择本项目编译后的 `dist` 文件夹
+* Clone this repository into your local development folder. For convenience, you can place the development folder directly under `{workspace}/data/plugins/`
+* Install [NodeJS](https://nodejs.org/en/download) and [pnpm](https://pnpm.io/installation) (or npm), then run `pnpm i` (or `npm i`) in the development folder
+* Run `pnpm run dev` (or `npm run dev`) for live compilation
+* Open the Bazaar in SiYuan and enable the plugin in the Download tab
 
-## 配置项
+## Settings
 
-安装后，在「设置」→「集市」已安装插件列表中找到「光标定位」并打开设置：
+After the plugin is enabled, open the plugin's settings page in the Bazaar to configure:
 
-| 配置项 | 说明 | 默认值 |
-| --- | --- | --- |
-| 切换文档时自动聚焦 | 切换文档时是否自动定位到光标块 | 开启 |
-| 高亮时长（毫秒） | 定位块高亮动画的时长（500–5000） | 2000 |
+* **Auto focus when switching documents**: whether to locate the cursor block automatically on document switch (default on)
+* **Highlight duration (ms)**: duration of the highlight animation, 500–5000 ms (default 2000 ms)
 
-## 开发
+## Development
 
-要求 Node.js v16+。
+* `src/index.ts`: plugin entry
+* `src/cursor.ts`: cursor focus core logic
+* `src/index.scss`: styles (built into `index.css`)
+* `src/i18n/*.json`: language files
+* `icon.png` (160*160), `preview.png` (1024*768)
+* [Frontend API](https://github.com/siyuan-note/petal)
+* [Backend API](https://github.com/siyuan-note/siyuan/blob/master/API_zh_CN.md)
 
-```bash
-npm install        # 安装依赖
-npm run dev        # 开发模式（监听文件变化）
-npm run build      # 构建到 dist/
-```
+### Implementation notes
 
-## 项目结构
+1. Uses the official SiYuan `switch-protyle` event as the primary switch listener; a MutationObserver on the layout is kept as a fallback (with 500 ms debounce)
+2. SiYuan loses the selection when switching away from a document, so the plugin continuously records the last cursor block of each document and restores the position when switching back
+3. Settings are stored with `loadData`/`saveData` and exposed through the official `Setting` class
+4. Built with the same toolchain as the official plugin-sample: webpack + esbuild-loader + sass + mini-css-extract-plugin
 
-```
-cursor-focus/
-├── plugin.json          # 插件配置文件
-├── package.json         # npm 配置
-├── tsconfig.json        # TypeScript 配置
-├── rollup.config.js     # Rollup 打包配置
-├── src/
-│   ├── index.ts         # 插件入口文件
-│   ├── cursor.ts        # 光标定位核心逻辑
-│   ├── styles.css       # 样式文件
-│   └── styles.d.ts      # CSS 模块类型声明
-├── i18n/                # 界面文案（zh_CN / en_US）
-├── icon.png             # 插件图标
-├── README.md            # 说明文档
-└── dist/                # 编译输出目录（构建后生成）
-```
+## Packaging
 
-## 实现说明
+* Run `pnpm run build` (or `npm run build`) to generate `package.zip`
+* The `package.zip` contains: `i18n/`, `icon.png`, `index.css`, `index.js`, `plugin.json`, `preview.png`, `README*.md`
 
-以指南文档的实现为基础，并做了以下修正与增强：
+## Publishing
 
-1. **文档切换监听**：优先使用思源官方 `switch-protyle` 事件；指南中的 MutationObserver 方案保留作为兜底（带 500ms 防抖，避免重复触发）。
-2. **光标位置记录**：思源切换文档后原编辑器的选区会丢失，插件会持续记录每个文档最近的光标位置，切换回来时据此定位。
-3. **设置读取**：指南中的 `this.plugin.settings` 并非思源 API，实际从插件数据 `this.plugin.data` 读取（带默认值兜底）。
-4. **消息提示**：兼容新版思源（独立导出的 `showMessage` 函数）与旧版（`Plugin#showMessage` 方法）两种 API。
-5. **打包格式**：指南中的 `iife + external: ["siyuan"]` 无法产出可被思源加载的插件，改为思源官方示例使用的 `cjs` 格式。
-6. **样式打包**：思源插件只能加载 `index.js`，通过 Rollup 自定义插件将 `styles.css` 注入为运行时样式，确保高亮动画生效。
-7. **多语言**：新增 `i18n/` 目录，`focusToCursor`、`noCursor` 等文案随思源语言切换。
+* Create a new release on GitHub, using the plugin version as the "Tag version", e.g. `v1.0.0`
+* Upload `package.zip` as a binary asset
+* Submit the release
+* For the first release, create a PR to the [Community Bazaar](https://github.com/siyuan-note/bazaar) repository and add your repo to `plugins.json`
 
-## 常见问题
+## FAQ
 
-### 切换文档后没有自动聚焦？
+### Auto focus does not work after switching documents?
 
-- 确认「切换文档时自动聚焦」设置已启用；
-- 打开开发者工具（`Ctrl+Shift+I`）查看控制台是否有报错；
-- 确认此前曾在目标文档中点击或编辑过（插件需要记录过光标位置）。
+* Make sure "Auto focus when switching documents" is enabled in the plugin settings
+* Open DevTools (`Ctrl+Shift+I`) and check the console for errors
+* Make sure you have clicked or edited in the target document before (the plugin needs a recorded cursor position)
 
-### 高亮效果不显示？
+### Highlight does not show?
 
-- 检查元素是否添加了 `cursor-focus-highlight` 类；
-- 检查 CSS 动画语法以及当前主题是否有样式覆盖。
+* Check whether the element has the `cursor-focus-highlight` class
+* Check for CSS conflicts with your current theme
 
-### 如何获取块 ID？
+### How to get the block ID?
 
 ```typescript
-// 方法 1：从 data 属性
+// Method 1: from the data attribute
 const blockId = block.dataset.nodeId;
 
-// 方法 2：从思源 API（新版通过 kernel RPC 调用）
-const blockInfo = await this.kernel.rpc.call["api.block.getBlockInfo"]({ id: blockId });
+// Method 2: from the SiYuan kernel API (via RPC)
+const blockInfo = await this.kernel.rpc.call["api.block.getBlockInfo"]({id: blockId});
 ```
 
-## 参考资源
-
-- [思源插件开发文档](https://github.com/siyuan-note/siyuan)
-- [思源插件 API 文档](https://github.com/siyuan-note/siyuan/blob/master/API_zh_CN.md)
-- [思源插件示例](https://github.com/siyuan-note/plugin-sample)
-- [Rollup 官方文档](https://rollupjs.org/)
-- [TypeScript 官方文档](https://www.typescriptlang.org/)
-
-## 许可证
+## License
 
 [MIT](LICENSE)
