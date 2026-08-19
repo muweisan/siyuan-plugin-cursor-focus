@@ -2,7 +2,7 @@
   "name": "siyuan-plugin-cursor-focus",
   "author": "muweisan",
   "url": "https://github.com/muweisan/siyuan-plugin-cursor-focus",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "minAppVersion": "3.8.0",
   "backends": [
     "all"
